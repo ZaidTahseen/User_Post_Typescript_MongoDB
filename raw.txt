@@ -1,0 +1,36 @@
+// Paging 
+// {{url}}/api/post?skip=1                          ----  Done
+
+// Filters 
+// {{url}}/api/post?title=NodeJS    -               ----  Done
+// {{url}}/api/post?content=loved                   ----  Done
+// {{url}}/api/post?title=Nodejs&content=love       ----  Done
+
+
+// Pending /////
+// {{url}}/api/post?dislikes=lte:2                  ----  Done
+// {{url}}/api/post?dislikes=gte:2                  ----  Done
+// {{url}}/api/post?dislikes=eq:4                   ----  Done
+// {{url}}/api/post?likes=lte:5                     ----  Done  
+// {{url}}/api/post?likes=gte:5                     ----  Done  
+// {{url}}/api/post?likes=eq:5                      ----  Done  
+// Pending ... 
+// {{url}}/api/post?dislikes=eq:4&likes=eq:0        ----  Done
+
+
+// {{url}}/api/post?startDate=2022-06-28T15:12:14.142Z
+// {{url}}/api/post?startDate=2022-06-28T15:12:14.142Z&endDate=2022-06-28T15:12:14.142Z
+
+// SortBy
+// {{url}}/api/post?sortBy=totalDislikes:desc       ----  Done
+// {{url}}/api/post?sortBy=totalLikes:desc          ----  Done
+// {{url}}/api/post?sortBy=createdAt:desc           ----  Done
+
+
+
+
+user Url ------> 
+
+{{url}}/api/user/details?id=62b445b59d13ae0d9260dca8
+{{url}}/api/user/details/?skip=1&limit=2
+{{url}}/api/user/details/?sortBy=city:desc

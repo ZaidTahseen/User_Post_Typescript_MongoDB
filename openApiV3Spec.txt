@@ -1,0 +1,395 @@
+openapi: 3.0.1
+info:
+  title: Swagger Petstore
+  description: This is a  API spec using OpenAPI V3 standards
+  version: 1.0.6
+servers:
+  - url: http://localhost:5500/api/
+tags:
+  - name: user
+    description: Operations about user
+  - name: post
+    description: Everything about your Post
+
+
+
+
+    
+paths:
+
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Logs user into the system
+      operationId: loginUser
+      requestBody:
+        description: Create user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        '200':
+          description: Logged In successful
+          headers:
+            Authorization:
+              description: calls per hour allowed by the user
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid Data Supplied
+        '401':
+          description: Invalid email or password are supplied
+        '500':
+          description: Internal Server Error
+       
+       
+  /user/details:
+    get:
+      parameters:
+        - in : query
+          name : id
+          schema :
+            type : string
+          description : The id of user value 
+        - in : query
+          name : skip
+          schema :
+            type : number
+          description : skip and limit both are mandidatory , bydefault 0,0
+        - in : query
+          name : limit
+          schema :
+            type : number
+          description : skip and limit both are mandidatory , bydefault 0,0
+        - in : query
+          name : sortBy
+          schema :
+            type : string
+          description : sort values filled like , exm - name:desc , by default asc
+      
+      security:
+        - BearerAuth: []
+      
+      tags:
+        - user
+      summary: Get users detail
+      operationId: userDetail
+
+      responses:
+        '200':
+          description: successful fetched user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal Server Error
+      x-codegen-request-body-name: body
+      
+      
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create new user
+      operationId: createUser
+      requestBody:
+        description: Create user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+        
+      responses:
+        '201':
+          description: User Created Successfully 
+        '400':
+          description: Invalid Data Supplied
+        '409':
+          description: User Already Created
+        '404':
+          description: The Post with provided ID was not found
+        '500':
+          description : Internal Server Error
+          
+      x-codegen-request-body-name: body
+      
+  
+  /post:
+    put:
+      parameters:
+        - in: query
+          name: postid
+          schema:
+            type : string 
+      
+      tags:
+        - post
+      summary: Create/Update new Post
+      operationId: createUpdatePost
+      
+      requestBody:
+        description: Create user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+
+      
+      responses:
+        '201':
+          description: Post Created Successfully 
+        '204':
+          description : Post Updated Succeesfully
+        '400':
+          description: Invalid Data Supplied
+        '401':
+          description: Unauthorized user
+        '404':
+          description: The Post with provided ID was not found
+        '500':
+          description : Internal Server Error
+      x-codegen-request-body-name: body
+      
+  
+  /post/{postid}:
+    post:
+      tags:
+        - post
+      summary: Like or Dislike a particular post
+      operationId: likeDislikePost
+      parameters:
+        - in : path
+          name : postid
+          required : true 
+          schema :
+            type : string
+          description : The post id
+        
+        - in : query 
+          name: likes
+          schema:
+            type: boolean
+            enum : [true]
+          description: The true flag for like or likes
+        
+        - in : query 
+          name: dislikes
+          schema:
+            type: boolean
+            enum : [true]
+          description: The true flag for like or dislikes
+        
+      responses:
+        '200':
+          description: Post Succesfully Likes/Dislikes
+        '400':
+          description: Incorrect request with query parameter
+        '404':
+          description: The Post with provided ID was not found
+        '500':
+          description : Internal Server Error
+          
+      x-codegen-request-body-name: body
+
+    
+  /post/top:
+    get:
+      tags:
+        - post
+      summary: Get Top Post for Likes and Dislikes
+      operationId: getTopPost
+      parameters:
+        - in : query
+          name : userid
+          schema :
+            type : string
+          description : The user id
+        
+        - in : query 
+          name: likes
+          schema:
+            type: boolean
+            enum : [true]
+          description: The true flag for like or likes
+        
+        - in : query 
+          name: dislikes
+          schema:
+            type: boolean
+            enum : [true]
+          description: The true flag for like or dislikes
+        
+      responses:
+        '200':
+          description: Top Post Succesfully Fetched
+        '400':
+          description: Incorrect request with query parameter
+        '500':
+          description : Internal Server Error
+          
+      x-codegen-request-body-name: body
+  
+  
+  /post/all:
+    get:
+      tags:
+        - post
+      summary: Get All Posts
+      operationId: getAllPost
+      parameters:
+        - in : query
+          name : skip
+          schema :
+            type : integer
+          description : The skip value 
+        
+        - in : query 
+          name: title
+          schema:
+            type: string
+          description: Search post for matched title
+        
+        - in : query 
+          name: content
+          schema:
+            type: string
+          description: Search post for matched content
+       
+        - in : query 
+          name: likes 
+          schema:
+            type: string
+          allowReserved: true 
+          description: Expected value format is lte:5 or gte:2 or eq:3
+       
+        - in : query 
+          name: dislikes 
+          schema:
+            type: string
+          allowReserved: true 
+          description: Expected value format is lte:5 or gte:2 or eq:3
+          
+          
+        - in : query 
+          name: sortBy
+          schema:
+            type: string
+            enum : [
+              totalDislikes:desc , 
+              totalLikes:desc , 
+              totalDislikes:asc , 
+              totalLikes:asc,
+              createdAt:desc,
+              createdAt:asc
+              ]
+          allowReserved: true 
+          description: Search post for matched title
+        
+        
+        # Example 2022-06-29T15:24:38.792Z
+        - in : query 
+          name: startDate
+          schema:
+            type: datetime
+          description: Iso standard datetime provided
+          
+        - in : query 
+          name: endDate
+          schema:
+            type: datetime
+          description: Iso standard datetime provided
+        
+        
+      responses:
+        '200':
+          description: All Post Succesfully Fetched
+        '500':
+          description : Internal Server Error
+          
+      x-codegen-request-body-name: body
+  
+  
+  
+  
+  
+components:
+
+  schemas:
+    
+    User:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - mobile
+        - marital_status
+        - city
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        mobile:
+          type: number
+        marital_status:
+          type: number
+        city:
+          type: string
+      xml:
+        name: User
+    
+    Login:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      xml:
+        name: Login
+
+
+    Post:
+      type: object
+      properties:
+        title :
+          type : string
+        content :
+          type : string
+          
+      xml:
+        name: Post
+    
+  
+  
+  
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
+
+
+security:
+  - BearerAuth: [ ] 
+  
+
